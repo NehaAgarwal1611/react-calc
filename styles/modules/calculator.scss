@@ -1,0 +1,38 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.app {
+	width :320px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.calculator {
+	display: flex;
+	flex-direction: row;
+	.keys {
+		width: 240px;
+	}
+	button {
+		background-color: #fff;
+		color: #000;
+		height: 80px;
+		width: 80px;
+		border: 1px solid cornflowerblue;
+	}
+	.operations {
+		width: 80px;
+		button {
+			background-color: cornflowerblue;
+			color: #fff;
+		}
+	}
+}
+
+.displayValue {
+	height: 100px;
+	background-color: #ddd;
+	color: #fff;
+}
