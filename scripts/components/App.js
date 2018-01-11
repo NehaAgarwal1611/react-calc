@@ -10,7 +10,8 @@ export default class App extends React.Component {
 			output: 0,
 			displayValue: '',
 			maxLength: 30,
-			waiting: ''
+			waiting: '',
+			operator: null
 		};
 		this.operation = {
 			'add': function(prev, next) {return prev + next;},
@@ -72,16 +73,9 @@ export default class App extends React.Component {
 		})
 	}
 
-	setOperation(command) {
-		const memory = parseFloat(this.state.displayValue);
-		if(this.operation.hasOwnProperty(command)){
-			this.operation = this.operation[command];
-		}
-	}
-
 	handleOperations(e) {
-		this.setOperation(e.target.className);
-		console.log(memory);
+		const memory = parseFloat(this.state.displayValue);
+		this.operation = this.operation[e.target.className];
 		// switch(e.target.className) {
 		// 	case 'divide':
 		// 		console.log('divide');
