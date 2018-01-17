@@ -7,17 +7,17 @@ export default class App extends React.Component {
 	constructor(){
 		super();
 		this.state = {
-			output: 0,
 			displayValue: '',
-			maxLength: 30,
-			waiting: '',
-			operator: null
+			operator: undefined,
+			memory: 0,
+			waitingForOperand: false
 		};
-		this.operation = {
+		this.calculateOutput = {
 			'add': function(prev, next) {return prev + next;},
 			'subtract': function(prev, next) {return prev - next;},
 			'divide': function(prev, next) {return prev / next;},
-			'multiply': function(prev, next) {return prev * next;}
+			'multiply': function(prev, next) {return prev * next;},
+			'equalTo': function(prev, next) {return next}
 		};
 		this.enterDigit = this.enterDigit.bind(this);
 		this.clearData = this.clearData.bind(this);
@@ -29,9 +29,17 @@ export default class App extends React.Component {
 	}
 
 	enterDigit(e) {
-		this.setState({
-			displayValue: this.state.displayValue + e.target.textContent || e.target.textContent
-		})
+		const { displayValue, waitingForOperand } = this.state;
+		if (waitingForOperand) {
+      this.setState({
+        displayValue: e.target.textContent,
+        waitingForOperand: false
+      })
+    } else {
+      this.setState({
+        displayValue: displayValue === '0' ? e.target.textContent : this.state.displayValue + e.target.textContent
+      })
+    }
 	}
 
 	clearData(e) {
@@ -74,28 +82,26 @@ export default class App extends React.Component {
 	}
 
 	handleOperations(e) {
-		const memory = parseFloat(this.state.displayValue);
-		this.operation = this.operation[e.target.className];
-		// switch(e.target.className) {
-		// 	case 'divide':
-		// 		console.log('divide');
-		// 		break;
-		// 	case 'multiply':
-		// 		console.log('multiply');
-		// 		break;
-		// 	case 'subtract':
-		// 		console.log('subtract');
-		// 		break;
-		// 	case 'add':
-		// 		console.log('add');
-		// 		console.log(this.state.memory);
-		// 		break;
-		// 	case 'equalTo':
-		// 		console.log('equalTo');
-		// 		break;
-		// 	default:
-		// 		break;
-		// }
+		let { memory, displayValue, operator } = this.state;
+		const prevValue = parseFloat(displayValue);	
+		if(!memory) {
+			this.setState({
+				memory: prevValue
+			})
+		} else if(operator) {
+			const currentValue = memory || 0;
+      const newValue = this.calculateOutput[operator](currentValue, prevValue);
+      
+      this.setState({
+        memory: newValue,
+        displayValue: String(newValue)
+      })
+		}
+
+		this.setState({
+			operator: e.target.className,
+			waitingForOperand: true
+		})
 	}
 
 	componentDidMount() {
